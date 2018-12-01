@@ -10,6 +10,7 @@ let firstSeen = null;
 let index = 0;
 
 // TODO Read this data from the Advent of code URL rather than local
+// https://adventofcode.com/2018/day/1/input
 fs.readFile('./input.txt', 'utf8', (err, contents) => {
     if(err) throw err;
     
