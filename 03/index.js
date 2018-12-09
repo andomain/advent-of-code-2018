@@ -1,13 +1,12 @@
 'use strict';
 
 const fs = require('fs');
-let result = 0;
 
 fs.readFile('./input.txt', 'utf8', (err, content) => {
     const claims = getClaims(content);
-    const overlapCount = getOverlaps(claims);
 
-    console.log(`Answer 1 - ${overlapCount}`);
+    console.log(`Answer 1 - ${getOverlaps(claims)}`);
+    console.log(`Answer 2 - ${uniqueClaim(claims)}`);
 });
 
 /**
@@ -29,6 +28,7 @@ const getClaims = (str) => {
  */
 const getOverlaps = claims => {
     const grid = {};
+    let result = 0;
     claims.forEach(claim => {
         for (let x = claim.x; x < (claim.x + claim.w); x++) {
             for (let y = claim.y; y < (claim.y + claim.h); y++) {
@@ -46,3 +46,35 @@ const getOverlaps = claims => {
     return result;
 }
 
+/**
+ * Find a unique, non overlapping claim
+ * @param {array} claims - Array of claims
+ */
+const uniqueClaim = (claims) => {
+    for (let a = 0; a < claims.length; ++a) {
+        let unique = true;
+        for (let b = 0; b < claims.length; ++b) {
+            if (a === b) continue;
+            if (overlaps(claims[a], claims[b])) {
+                unique = false;
+                break;
+            }
+        }
+
+        if (unique) return claims[a].id;
+    }
+}
+
+/**
+ * Calculate if two claims overlap
+ * @param {claim} a 
+ * @param {claim} b 
+ */
+const overlaps = (a, b) => {
+    return (
+        (a.x < b.x + b.w) &&
+        (a.y < b.y + b.h) &&
+        (b.x < a.x + a.w) &&
+        (b.y < a.y + a.h)
+    );
+}
