@@ -1,6 +1,8 @@
 const fs = require('fs');
 
 fs.readFile('./input.txt', 'utf8', (err, content) => {
+    if(err) throw new Error(err);
+
     // Process input data
     const schedule = processContent(content);
 
