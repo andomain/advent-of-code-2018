@@ -8,9 +8,11 @@ fs.readFile('./input.txt', 'utf8', (err, content) => {
     const pass1 = react(content);
 
     result[0] = pass1.compound.length;
+    result[1] = stripAndReact(content, pass1.chars).length;
 
-    const characters = pass1.chars;
-    console.log(stripChar(content, 'a'));
+    console.log(`Answer 1 - ${result[0]}`);
+    console.log(`Answer 2 - ${result[1]}`);
+
 });
 
 /**
@@ -33,6 +35,18 @@ const react = str => {
         compound: stack.join(''),
         chars: [...dict].sort(),
     };
+}
+
+/**
+ * Find which character, when removed, returns the shortest result
+ * @param {string} content - Input string
+ * @param {aray} chars - Array of characters to test
+ */
+const stripAndReact = (content, chars) => {
+    return chars.reduce((result, char) => {
+        const tmp = react(stripChar(content, char));
+        return tmp.compound.length < result.length ? {char, length: tmp.compound.length} : result;
+    }, {char: '', length: content.length});
 }
 
 /**

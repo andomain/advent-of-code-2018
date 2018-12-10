@@ -20,3 +20,5 @@ N.b. where possible vanilla Node/Javascript is used with no dependencies/package
     Convert timestamped data and detect frequency of time periods
 
 5. Alchemical Reduction
+
+    String parsing and removing duplicates
