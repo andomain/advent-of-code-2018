@@ -10,6 +10,7 @@ fs.readFile('./input.txt', 'utf8', (err, content) => {
     result[0] = pass1.compound.length;
 
     const characters = pass1.chars;
+    console.log(stripChar(content, 'a'));
 });
 
 /**
@@ -65,4 +66,14 @@ const isUpperCase = (c, upper = true) => {
         return c === c.toUpperCase();
     }
     return c === c.toLowerCase();
+}
+
+/**
+ * Remove case-insensitive characters from a string
+ * @param {string} str - String to process
+ * @param {string} c - character to remove
+ */
+const stripChar = (str, c) => {
+    const reg = new RegExp(c, "ig");
+    return str.replace(reg, '');
 }
