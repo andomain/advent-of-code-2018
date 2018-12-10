@@ -5,9 +5,11 @@ fs.readFile('./input.txt', 'utf8', (err, content) => {
 
     const result = [];
 
-    result[0] = react(content).length;
-    console.log(result[0]);
+    const pass1 = react(content);
 
+    result[0] = pass1.compound.length;
+
+    const characters = pass1.chars;
 });
 
 /**
@@ -16,7 +18,9 @@ fs.readFile('./input.txt', 'utf8', (err, content) => {
  */
 const react = str => {
     const stack =[];
+    const dict = new Set();
     str.split('').forEach(c => {
+        dict.add(c.toLowerCase());
         if (!stack.length || !areOpposite(peek(stack), c)) {
             stack.push(c);
         } else {
@@ -24,7 +28,10 @@ const react = str => {
         }
     })
 
-    return stack.join('');
+    return {
+        compound: stack.join(''),
+        chars: [...dict].sort(),
+    };
 }
 
 /**
