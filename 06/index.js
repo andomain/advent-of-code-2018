@@ -21,10 +21,11 @@ fs.readFile('./input.txt', 'utf8', (err, content) => {
     }
 
     // Build array of regions for each point
-    const regionSizes = calculateRegions(coordinates,upperBound,closest);
+    const regionSizes = calculateRegions(coordinates, upperBound, closest);
 
     const result = Array(2);
     result[0] = getMaxOfArray(regionSizes);
+    result[1] = densestRegion(coordinates,upperBound);
     console.log(result);
 });
 
@@ -68,7 +69,8 @@ const getMaxCoord = coordArr => {
  */
 const getShortestDistance = (coordArr, point) => {
     // calculate distance to each coordinate from the point
-    const distances = coordArr.map(coord => getDistance(point, coord));
+    const distances = getDistances(coordArr, point);
+
     // Find the shortest of these distances
     const shortest = getMinOfArray(distances);
 
@@ -78,6 +80,13 @@ const getShortestDistance = (coordArr, point) => {
         return distances.indexOf(shortest);
     }
 }
+
+/**
+ * Build array of distances from a point to supplied coordinates
+ * @param {array} coordArr - Coordinate array
+ * @param {array} point - [x,y] coordinate
+ */
+const getDistances = (coordArr, point) => coordArr.map(coord => getDistance(point, coord));
 
 /**
  * Get the size of the region closest to each coordinate
@@ -110,3 +119,25 @@ const calculateRegions = (coordArr, upper, closestPoints) => {
 
     return regions;
 }
+
+/**
+ * Get the size of the region that contains all points <10000 away from each coordinate
+ * @param {array} coordArr - Coordinate array
+ * @param {number} upper - Bound of area to check
+ */
+const densestRegion = (coordArr, upper) => {
+    let size = 0;
+    for (let x = 0; x < upper; x++) {
+        for (let y = 0; y < upper; y++) {
+            const distances = getDistances(coordArr, [x,y]);
+
+            if(sumArray(distances) < 10000) {
+                size++;
+            }
+        }
+    }
+
+    return size;
+}
+
+const sumArray = arr => arr.reduce((acc,val) => acc += val, 0);
