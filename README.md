@@ -22,3 +22,11 @@ N.b. where possible vanilla Node/Javascript is used with no dependencies/package
 5. Alchemical Reduction
 
     String parsing and removing duplicates
+
+6. Chronal Coordinates
+
+    Calculate Manhattan distances
+
+7. The Sum of Its Parts
+
+    GEnerate dependency graphs and calculate execution time

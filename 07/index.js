@@ -6,6 +6,7 @@ fs.readFile('./input.txt', 'utf8', (err, content) => {
     const lines = getLines(content);
     const graph = buildGraph(lines);
     result[0] = buildPath(graph);
+    result[1] = scheduleWorkers(graph)
 
     console.log(result);
 });
@@ -43,11 +44,20 @@ const buildGraph = input => {
  * @param {object} graph 
  */
 const getStartNode = graph => {
-    const result = Object.keys(graph).filter(node => graph[`${node}`].length === 0);
+    const result = getAvailable(graph);
 
     // Return the first alphabetical candidate
-    return result.sort()[0];
+    return result[0];
 }
+
+const getAvailable = graph => Object.keys(graph).filter(node => graph[`${node}`].length === 0).sort();
+
+const getAvailableAndRemove = graph => {
+    const available = Object.keys(graph).filter(node => graph[`${node}`].length === 0).sort()
+    available.forEach(task => delete graph[`${task}`]);
+    return available;
+};
+
 
 /**
  * Loop through the array building the path
@@ -78,4 +88,57 @@ updateDependencies = (graph, node) => {
         }
     });
     return graph;
+}
+
+// Solution to part 2
+const scheduleWorkers = (graph, n = 5, base_duration = 60) => {
+    const lookup = getTaskDuration(base_duration);
+    const workers = [...Array(n)].map((a, idx) => ({
+        id: idx,
+        idle: true,
+        task: null,
+        endTime: null,
+    }));
+
+    let tmp = JSON.parse(JSON.stringify(graph));
+    let time = 0;
+    let toDo = [];
+
+    while (Object.keys(tmp).length || workers.filter(w => !w.idle).length > 0) {
+        const busyWorkers = workers.filter(w => !w.idle);
+
+        // Check if any workers have finished tasks
+        busyWorkers.forEach(w => {
+            if (time === w.endTime) {
+                workers[w.id].idle = true;
+                workers[w.id].endTime = null;
+                tmp = updateDependencies(tmp, w.task);
+            }
+        });
+
+        toDo.push(...getAvailableAndRemove(tmp));
+        toDo.sort();
+        const availableWorkers = workers.filter(w => w.idle);
+
+        // Assign available workers to available tasks
+        while (availableWorkers.length && toDo.length) {
+            const thisWorker = availableWorkers.shift();
+            const thisTask = toDo.shift();
+
+            workers[`${thisWorker.id}`].idle = false;
+            workers[`${thisWorker.id}`].task = thisTask;
+            workers[`${thisWorker.id}`].endTime = time + lookup[`${thisTask}`];
+        }
+
+        time += 1;
+    }
+
+    return time - 1;
+}
+
+const getTaskDuration = (base) => {
+    const alphabet = [...Array(26)].map((a, idx) => String.fromCharCode(idx + 65));
+    const lookup = {};
+    alphabet.forEach((c, idx) => lookup[`${c}`] = idx + 1 + base);
+    return lookup;
 }
