@@ -10,7 +10,16 @@ try {
     fs.readFile(args[0], 'utf8', (err, content) => {
         if (err) throw new Error(err);
         const data =processInput(content);
-        console.log(data);
+        const result = Array(2);
+
+        data.forEach((game, idx) => {
+            result[0] = playGame(game);
+            if(game.test && (result[0] !== game.test)) {
+                throw new Error(`Test: Game ${idx} result is ${result[0]}. Expected ${game.test}`);
+            }
+        });
+
+        console.log(result);
     });
 
 } catch(e) {
@@ -31,4 +40,8 @@ processInput = str => {
             test: isTest ? isTest[1] : null,
         }
     })
+}
+
+playGame = data => {
+    return data;
 }
