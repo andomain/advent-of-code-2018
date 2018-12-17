@@ -27,4 +27,6 @@ N.b. where possible vanilla Node/Javascript is used with no dependencies/package
 
     Calculating Manhattan distances and enveloping regions
 
-7.
+7. The Sum of Its Parts
+
+    Generate dependency graphs and calculate execution time
