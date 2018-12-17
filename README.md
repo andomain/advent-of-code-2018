@@ -30,3 +30,7 @@ N.b. where possible vanilla Node/Javascript is used with no dependencies/package
 7. The Sum of Its Parts
 
     Generate dependency graphs and calculate execution time
+
+8. Memory Maneuver
+
+    Parse string of nodes and metadata
