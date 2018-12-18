@@ -13,19 +13,28 @@ try {
         const result = Array(2);
 
         data.forEach((game, idx) => {
-            result[0] = playGame(game);
-            if (game.test && (result[0] !== game.test)) {
-                throw new Error(`Test: Game ${idx} result is ${result[0]}. Expected ${game.test}`);
+            const winner = playGame(game);
+            if (game.test) {
+                if (winner.score !== game.test) {
+                    throw new Error(`Test Failed: Game ${idx} result is ${winner.score}. Expected ${game.test}`);
+                } else {
+                    console.log(`Test Pass: Game ${idx} result is ${winner.score}. Expected ${game.test}`);
+                }
+            } else {
+                result[0] = playGame(data[0]).score;
+                console.log(result);
             }
         });
 
-        console.log(result);
     });
-
 } catch (e) {
     console.log(e);
 }
 
+/**
+ * Convert input string into game data
+ * @param {string} str
+ */
 processInput = str => {
     const reg = /(\d+) players; last marble is worth (\d+) points/;
     const isTestReg = /\: high score is (\d+)$/;
@@ -35,44 +44,91 @@ processInput = str => {
         const isTest = isTestReg.exec(line);
 
         return {
-            players: matches[1],
-            lastMarble: matches[2],
-            test: isTest ? isTest[1] : null,
+            players: parseInt(matches[1]),
+            lastMarble: parseInt(matches[2]),
+            test: isTest ? parseInt(isTest[1]) : null,
         }
     })
 }
 
+/**
+ * Reducer function to find the high score
+ * @param {object} max - Accumulator
+ * @param {object} player - Player to test
+ */
+const getHighScore = (max, player) => (player.score > max.score ? player : max);
+
+/**
+ * Play the game and return the winner
+ * @param {object} data - Game data
+ */
 playGame = data => {
     const circle = [0];
-    let currentPosition = 0;
-
     const players = initPlayers(data.players);
 
-    for(let marble = 1; marble <= data.lastMarble; marble++) {
+    let currentPosition = 0;
+
+    for (let marble = 1; marble <= data.lastMarble; marble++) {
         const playerId = (marble - 1) % data.players;
-        if(marble && marble % 23 === 0) {
-            console.log(`Marble ${marble} is a multiple of 23. Do the handling here`);
-            return;
+        if (marble % 23 === 0) {
+            currentPosition = getScorePosition(currentPosition, circle.length);
+
+            players[playerId].score += marble;
+            players[playerId].score += parseInt(circle.splice(currentPosition, 1).join());
+
+            continue;
         }
 
         // Calculate position to insert marble by incrementing current by 1
-        currentPosition = currentPosition + 1;
-        // If this is equal to the end of the array, add to the beginning, else insert into middle
-        currentPosition = (currentPosition >= circle.length ? 0 : currentPosition) + 1;
-        console.log(`Player ${playerId} plays marble ${marble} at position ${currentPosition}`);
-
+        currentPosition = updateCurrentPosition(currentPosition, circle.length);
+        // Insert marble
         circle.splice(currentPosition, 0, marble);
     }
-    return data;
+
+    return players.reduce(getHighScore, { score: 0 });
 }
 
-initPlayers = n => {
+/**
+ * Initialise array of n player objects
+ * @param {number} n - No. of players to create
+ */
+const initPlayers = n => {
     const result = Array(n);
-    for(let i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
         result[i] = {
-            id: i,
+            id: i + 1, // To match examples
             score: 0,
         }
     }
     return result;
+}
+
+/**
+ * Update the current position for a norma round of the game
+ * @param {number} current - current position
+ * @param {number} length - length of array to find position of
+ */
+const updateCurrentPosition = (current,length) => {
+    let newCurrent = current + 1;
+    // If new position is at the end of the array, loop to the first index else increment
+    // Add 1 to any result to insert into next position
+    if(newCurrent >= length) {
+        return 1;
+    } else {
+        return newCurrent + 1;
+    }
+}
+
+/**
+ * Update the current position for a scoring round of the game
+ * @param {number} current
+ * @param {number} length
+ */
+const getScorePosition = (current, length) => {
+    let newCurrent = current - 7
+    if(newCurrent > -1) {
+        return newCurrent;
+    }
+
+    return newCurrent + length;
 }
