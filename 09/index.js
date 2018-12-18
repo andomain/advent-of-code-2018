@@ -23,6 +23,8 @@ try {
             } else {
                 result[0] = playGame(data[0]).score;
                 console.log(result);
+                result[1] = playGame(data[0], 100).score;
+                console.log(result);
             }
         });
 
@@ -62,14 +64,19 @@ const getHighScore = (max, player) => (player.score > max.score ? player : max);
  * Play the game and return the winner
  * @param {object} data - Game data
  */
-playGame = data => {
+playGame = (data, modifier = 1) => {
     const circle = [0];
     const players = initPlayers(data.players);
-
+    const lastMarble = modifier * data.lastMarble
     let currentPosition = 0;
 
-    for (let marble = 1; marble <= data.lastMarble; marble++) {
+
+    for (let marble = 1; marble <= lastMarble; marble++) {
         const playerId = (marble - 1) % data.players;
+        if(marble % 1000 === 0) {
+            console.log(`${marble} / ${lastMarble}`);
+        }
+
         if (marble % 23 === 0) {
             currentPosition = getScorePosition(currentPosition, circle.length);
 
