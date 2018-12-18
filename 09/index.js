@@ -65,33 +65,34 @@ const getHighScore = (max, player) => (player.score > max.score ? player : max);
  * @param {object} data - Game data
  */
 playGame = (data, modifier = 1) => {
-    const circle = [0];
     const players = initPlayers(data.players);
     const lastMarble = modifier * data.lastMarble
-    let currentPosition = 0;
 
+    // Set up start node of a Linked List
+    let current = {
+        value: 0,
+    };
+    current.next = current;
+    current.prev = current;
 
-    for (let marble = 1; marble <= lastMarble; marble++) {
-        const playerId = (marble - 1) % data.players;
-        if(marble % 1000 === 0) {
-            console.log(`${marble} / ${lastMarble}`);
+    for (let marble = 1; marble <= lastMarble; marble += 1) {
+        const player = (marble - 1) % data.players;
+
+        if(marble % 23 === 0) {
+            // Add marble to score
+            players[player].score += marble;
+            // Move current position and update score
+            current = current.prev.prev.prev.prev.prev.prev;
+            players[player].score += current.prev.value;
+
+            // Remove node from LinkedList
+            current.prev.prev.next = current;
+            current.prev = current.prev.prev;
+        } else {
+            // Add marble into linkedlist
+            current = addAfter(marble, current.next);
         }
-
-        if (marble % 23 === 0) {
-            currentPosition = getScorePosition(currentPosition, circle.length);
-
-            players[playerId].score += marble;
-            players[playerId].score += parseInt(circle.splice(currentPosition, 1).join());
-
-            continue;
-        }
-
-        // Calculate position to insert marble by incrementing current by 1
-        currentPosition = updateCurrentPosition(currentPosition, circle.length);
-        // Insert marble
-        circle.splice(currentPosition, 0, marble);
     }
-
     return players.reduce(getHighScore, { score: 0 });
 }
 
@@ -110,32 +111,13 @@ const initPlayers = n => {
     return result;
 }
 
-/**
- * Update the current position for a norma round of the game
- * @param {number} current - current position
- * @param {number} length - length of array to find position of
- */
-const updateCurrentPosition = (current,length) => {
-    let newCurrent = current + 1;
-    // If new position is at the end of the array, loop to the first index else increment
-    // Add 1 to any result to insert into next position
-    if(newCurrent >= length) {
-        return 1;
-    } else {
-        return newCurrent + 1;
+const addAfter = (value, node) => {
+    const newNode = {
+        value,
+        prev: node,
+        next: node.next,
     }
-}
-
-/**
- * Update the current position for a scoring round of the game
- * @param {number} current
- * @param {number} length
- */
-const getScorePosition = (current, length) => {
-    let newCurrent = current - 7
-    if(newCurrent > -1) {
-        return newCurrent;
-    }
-
-    return newCurrent + length;
+    node.next.prev = newNode;
+    node.next = newNode;
+    return newNode;
 }
