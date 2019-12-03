@@ -1,4 +1,4 @@
-const { readFile, printResult } = require('../utils');
+import { readFile, printResult } from '../utils';
 
 const STEP_SIZE = 4;
 
@@ -9,9 +9,9 @@ const FINISH_OPCODE = 99;
 const TARGET_OUTPUT = 19690720;
 
 // Get data
-const init = readFile('./input.txt').split(',').map(n => Number(n));
+const init = readFile(`${__dirname}/input.txt`).split(',').map(n => Number(n));
 
-const processList = (list, noun, verb) => {
+const processList = (list: number[], noun: number, verb: number) => {
   const processed = Array.from(list);
   let position = 0;
 
@@ -38,24 +38,22 @@ const processList = (list, noun, verb) => {
   return processed;
 }
 
-const findTarget = (target, startList) => {
-  let result = null;
 
-  // Inefficient loop
+// Inefficient loop
+const findTarget = (target: number, startList: number[]): { noun: number, verb: number } => {
   for (let noun = 1; noun <= 99; noun++) {
     for (let verb = 1; verb <= 99; verb++) {
       const inter = processList(startList, noun, verb)[0];
       if (inter === target) {
-        result = { noun, verb };
+        return { noun, verb };
       }
     }
   }
-
-  return result;
+  throw new Error('Could not calculate target')
 }
 
 const result1 = processList(init, 12, 2)[0];
-const { noun, verb } = findTarget(TARGET_OUTPUT, init)
+const { noun, verb } = findTarget(TARGET_OUTPUT, init);
 const result2 = 100 * noun + verb;
 
 printResult(2, result1, result2);
