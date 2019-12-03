@@ -30,8 +30,11 @@ interface ILine {
 
 abstract class Grid<T extends GridPoint> {
   public points = new Map<string, T>();
+  public origin: Point;
 
-  constructor(public origin: Point) { }
+  constructor(public x: number = 0, y: number = 0) {
+    this.origin = new Point(x, y);
+  }
 
   abstract addPoint(p: Point): void;
 
@@ -43,7 +46,7 @@ abstract class Grid<T extends GridPoint> {
   }
 }
 
-export class Point implements IPoint {
+class Point implements IPoint {
   id: string;
   x: number;
   y: number;
