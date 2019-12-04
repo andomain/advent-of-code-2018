@@ -14,11 +14,10 @@ const line1Steps = lineDataToSteps(line1Data);
 const line2Steps = lineDataToSteps(line2Data);
 
 const grid = new ManhattanGrid();
-
 const line1 = new Line(grid);
 const line2 = new Line(grid);
 
-// Build paths
+// Build lines
 line1Steps.forEach(step => line1.step(step));
 line2Steps.forEach(step => line2.step(step));
 
