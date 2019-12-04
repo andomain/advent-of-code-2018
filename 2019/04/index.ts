@@ -1,30 +1,28 @@
 import { Validator } from '../utils/Validator';
 import { printResult, readFile } from '../utils';
 
-class PasswordValidator extends Validator<number> {
-  validate(candidate: number) {
-    const digits = candidate.toString().split('').map(d => Number(d));
-    let double = false;
+const validation = (candidate: number): boolean => {
+  const digits = candidate.toString().split('').map(d => Number(d));
+  let double = false;
 
-    for (let i = 0; i < digits.length - 1; i += 1) {
-      const current = digits[i];
-      const next = digits[i + 1];
+  for (let i = 0; i < digits.length - 1; i += 1) {
+    const current = digits[i];
+    const next = digits[i + 1];
 
-      if (next < current) {
-        return false;
-      }
-      if (current === next) {
-        double = true;
-      }
+    if (next < current) {
+      return false;
     }
-    return double;
+    if (!double && current === next) {
+      double = true;
+    }
   }
+  return double;
 }
 
 const input = readFile(`${__dirname}/input.txt`);
 const [lower, upper] = input.split('-').map(n => Number(n));
 
-const passwordValidator = new PasswordValidator();
+const passwordValidator = new Validator([validation]);
 
 // Dumb implementation: could be optimised
 let count = 0
