@@ -29,25 +29,44 @@ export class Intcode implements IIntcode {
     this.processed = Array.from(this.init);
   }
 
+  private readOpcode = (rawCode: number): number[] => rawCode
+    .toString()
+    .padStart(5, '0')
+    .split('')
+    .slice(1)  // All opcodes only 1 digit
+    .reverse()
+    .map(s => Number(s))
+
   process(): void {
     let position = 0;
 
     while (this.processed[position] !== FINISH_OPCODE) {
-      const opA = this.processed[this.processed[position + 1]];
-      const opB = this.processed[this.processed[position + 2]];
-      const dest = this.processed[position + 3];
+      const op = this.readOpcode(this.processed[position]);
+      const [opCode, mode1, mode2, mode3] = op;
 
-      switch (this.processed[position]) {
+      const opA = mode1 ? this.processed[position + 1] : this.processed[this.processed[position + 1]];
+      const opB = mode2 ? this.processed[position + 2] : this.processed[this.processed[position + 2]];
+      // const opC = mode3 ? this.processed[position + 3] : this.processed[this.processed[position + 3];
+
+      switch (opCode) {
         case ADD_OPCODE:
-          this.processed[dest] = opA + opB;
+          this.processed[this.processed[position + 3]] = this.add(opA, opB);
           break;
         case MULT_OPCODE:
-          this.processed[dest] = opA * opB;
+          this.processed[this.processed[position + 3]] = this.multiply(opA, opB);
           break;
         default: throw new Error(`Unknown opcode ${this.processed[position]}`);
       }
       position += STEP_SIZE;
     }
   }
+
+  private add(a: number, b: number) {
+    return a + b;
+  }
+  private multiply(a: number, b: number) {
+    return a * b;
+  }
+
 
 }
