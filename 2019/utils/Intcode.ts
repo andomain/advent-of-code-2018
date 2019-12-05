@@ -11,12 +11,13 @@ const FINISH_OPCODE = 99;
 export class Intcode implements IIntcode {
   constructor(public input: number[]) { }
 
-  process(noun: number, verb: number): number {
+  set(position: number, value: number): void {
+    this.input[position] = value;
+  }
+
+  process(): number {
     const processed = Array.from(this.input);
     let position = 0;
-
-    processed[1] = noun;
-    processed[2] = verb;
 
     while (processed[position] !== FINISH_OPCODE) {
       const opA = processed[processed[position + 1]];

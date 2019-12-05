@@ -12,7 +12,9 @@ const intCode = new Intcode(init);
 const findTarget = (target: number): { noun: number, verb: number } => {
   for (let noun = 1; noun <= 99; noun++) {
     for (let verb = 1; verb <= 99; verb++) {
-      const inter = intCode.process(noun, verb);
+      intCode.set(1, noun);
+      intCode.set(2, verb);
+      const inter = intCode.process();
       if (inter === target) {
         return { noun, verb };
       }
@@ -21,7 +23,9 @@ const findTarget = (target: number): { noun: number, verb: number } => {
   throw new Error('Could not calculate target')
 }
 
-const result1 = intCode.process(12, 2);
+intCode.set(1, 12);
+intCode.set(2, 2);
+const result1 = intCode.process();
 const { noun, verb } = findTarget(TARGET_OUTPUT);
 const result2 = 100 * noun + verb;
 
