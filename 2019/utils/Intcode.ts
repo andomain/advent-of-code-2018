@@ -9,34 +9,45 @@ const MULT_OPCODE = 2;
 const FINISH_OPCODE = 99;
 
 export class Intcode implements IIntcode {
-  constructor(public input: number[]) { }
+  public init: number[];
+  private processed: number[];
 
-  set(position: number, value: number): void {
-    this.input[position] = value;
+  constructor(public input: number[]) {
+    this.init = Array.from(input);
+    this.processed = Array.from(input);
   }
 
-  process(): number {
-    const processed = Array.from(this.input);
+  set(position: number, value: number): void {
+    this.processed[position] = value;
+  }
+
+  get(position: number): number {
+    return this.processed[position];
+  }
+
+  reset(): void {
+    this.processed = Array.from(this.init);
+  }
+
+  process(): void {
     let position = 0;
 
-    while (processed[position] !== FINISH_OPCODE) {
-      const opA = processed[processed[position + 1]];
-      const opB = processed[processed[position + 2]];
-      const dest = processed[position + 3];
+    while (this.processed[position] !== FINISH_OPCODE) {
+      const opA = this.processed[this.processed[position + 1]];
+      const opB = this.processed[this.processed[position + 2]];
+      const dest = this.processed[position + 3];
 
-      switch (processed[position]) {
+      switch (this.processed[position]) {
         case ADD_OPCODE:
-          processed[dest] = opA + opB;
+          this.processed[dest] = opA + opB;
           break;
         case MULT_OPCODE:
-          processed[dest] = opA * opB;
+          this.processed[dest] = opA * opB;
           break;
-        default: throw new Error(`Unknown opcode ${processed[position]}`);
+        default: throw new Error(`Unknown opcode ${this.processed[position]}`);
       }
       position += STEP_SIZE;
     }
-
-    return processed[0];
   }
 
 }
