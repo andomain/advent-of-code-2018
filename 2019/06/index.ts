@@ -51,24 +51,30 @@ const sumOrbits = (planets: Map<string, Planet>, start: string, count = 0) => {
   return currentLength;
 }
 
-const countOrbits = (
-    startPlanet: string,
-    orbits: Map<string, string[]>,
-    pathLength = 0
-) => {
-    const branches = orbits.get(startPlanet);
-    if (!branches || branches.length < 1) return pathLength;
+const getPath = (planets: Map<string, Planet>, from: string, to: string): string[] => {
+  const path = [];
+  let current = planets.get(to) || null;
 
-    let count = pathLength;
+  while (current !== null && current.name !== from) {
+    path.unshift(current.name);
+    current = current.parent;
+  }
+  path.unshift(from);
+  return path;
 
-    branches.forEach(orbit => {
-        count += countOrbits(orbit, orbits, pathLength + 1);
-    });
+}
 
 const result1 = sumOrbits(planetLookup, 'COM');
+const youPath = getPath(planetLookup, 'COM', 'YOU');
+const sanPath = getPath(planetLookup, 'COM', 'SAN');
 
-const result1 = countOrbits('COM', orbits);
+const minPath = youPath.reduce((min, currentStep, idx): number => {
+  const joinPoint = sanPath.indexOf(currentStep);
+  if (joinPoint < 0) return min;
 
-const santaOrbits = countOrbits('SAN', orbits);
+  // Remember to subtract two to ignore start/end points
+  const interPath = (youPath.length - idx - 1) + (sanPath.length - 1 - joinPoint) - 2;
+  return Math.min(min, interPath);
+}, Number.MAX_SAFE_INTEGER);
 
-printResult(6, result1);
+printResult(6, result1, minPath);
