@@ -24,31 +24,64 @@ export class Intcode implements IIntcode {
     this.program[position] = value;
   }
 
-  execute(inputs?: number[]): number {
+  get(position: number): number {
+    return this.program[position];
+  }
+
+  private getParameter(instruction: number[], position: number, modes: string): number {
+    const positionMode = modes[3 - position] === '0';
+    if (positionMode) {
+      return this.program[instruction[position]];
+    }
+    return instruction[position];
+  }
+
+  execute(inputs: number[] = []): number {
     let finished = false;
+    let output: number = 0;
     for (let i = 0; ((i < this.program.length) && !finished);) {
       const instruction = this.program.slice(i, i + 4);
-      const opcode = instruction[0];
+
+      const opcode = instruction[0] % 100;
+      const modes = instruction[0].toString().padStart(5, '0')
+
+      const param1 = this.getParameter(instruction, 1, modes);
+      const param2 = this.getParameter(instruction, 2, modes);
 
       switch (opcode) {
         case ADD: {
-          this.program[instruction[3]] = this.add(this.program[instruction[1]], this.program[instruction[2]]);
+          this.program[instruction[3]] = this.add(param1, param2);
           i += 4;
           break;
         }
         case MULT: {
-          this.program[instruction[3]] = this.multiply(this.program[instruction[1]], this.program[instruction[2]]);
+          this.program[instruction[3]] = this.multiply(param1, param2);
           i += 4;
+          break;
+        }
+        case INPUT: {
+          const input = inputs.shift();
+          if (!input) {
+            throw new Error('No input to read');
+          }
+          this.program[instruction[1]] = input;
+          i += 2;
+          break;
+        }
+        case OUTPUT: {
+          output = param1;
+          i += 2;
           break;
         }
         case FINISH: {
           finished = true;
           break;
         }
-        default: throw new Error(`Unknown opcode ${opcode}`)
+        default: throw new Error(`Unknown opcode at position ${i}:  ${opcode}`)
       }
     }
-    return this.program[0];
+
+    return output;
   }
 
   private add(a: number, b: number): number {

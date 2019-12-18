@@ -10,7 +10,9 @@ const findTarget = (program: number[], target: number): { noun: number, verb: nu
       const intCode = new Intcode(program)
       intCode.set(1, noun);
       intCode.set(2, verb);
-      if (intCode.execute() === target) {
+      intCode.execute();
+      const result = intCode.get(0);
+      if (result === target) {
         return { noun, verb };
       }
     }
@@ -25,7 +27,8 @@ const init = readFile(`${__dirname}/input.txt`).split(',').map(n => Number(n));
 const intCode = new Intcode(init);
 intCode.set(1, 12);
 intCode.set(2, 2);
-const result1 = intCode.execute();
+intCode.execute();
+const result1 = intCode.get(0);
 
 const { noun, verb } = findTarget(init, TARGET_OUTPUT);
 const result2 = 100 * noun + verb;
