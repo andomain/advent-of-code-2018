@@ -1,6 +1,10 @@
 import { readFileLines, printResult } from '../utils';
 
-class Planet {
+interface Node {
+  parent: Planet | null;
+  children: Planet[];
+}
+class Planet implements Node {
   public parent: Planet | null;
   public children: Planet[];
 
