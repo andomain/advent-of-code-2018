@@ -73,6 +73,32 @@ export class Intcode implements IIntcode {
           i += 2;
           break;
         }
+        case JUMP_TRUE: {
+          if (param1 !== 0) {
+            i = param2;
+          } else {
+            i += 3;
+          }
+          break;
+        }
+        case JUMP_FALSE: {
+          if (param1 === 0) {
+            i = param2;
+          } else {
+            i += 3;
+          }
+          break;
+        }
+        case LESS_THAN: {
+          this.program[instruction[3]] = (param1 < param2) ? 1 : 0;
+          i += 4;
+          break;
+        }
+        case EQUALS: {
+          this.program[instruction[3]] = (param1 === param2) ? 1 : 0;
+          i += 4;
+          break;
+        }
         case FINISH: {
           finished = true;
           break;
