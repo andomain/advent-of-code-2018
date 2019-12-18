@@ -4,16 +4,17 @@ import { Intcode } from '../utils/Intcode';
 const TARGET_OUTPUT = 19690720;
 
 // Inefficient loop
-const findTarget = (target: number): { noun: number, verb: number } => {
+const findTarget = (program: number[], target: number): { noun: number, verb: number } => {
   for (let noun = 1; noun <= 99; noun++) {
     for (let verb = 1; verb <= 99; verb++) {
+      const intCode = new Intcode(program)
       intCode.set(1, noun);
       intCode.set(2, verb);
-      intCode.process();
-      if (intCode.get(0) === target) {
+      intCode.execute();
+      const result = intCode.get(0);
+      if (result === target) {
         return { noun, verb };
       }
-      intCode.reset();
     }
   }
   throw new Error('Could not calculate target')
@@ -26,12 +27,10 @@ const init = readFile(`${__dirname}/input.txt`).split(',').map(n => Number(n));
 const intCode = new Intcode(init);
 intCode.set(1, 12);
 intCode.set(2, 2);
-intCode.process();
+intCode.execute();
 const result1 = intCode.get(0);
-intCode.reset();
-console.log(result1);
 
-const { noun, verb } = findTarget(TARGET_OUTPUT);
+const { noun, verb } = findTarget(init, TARGET_OUTPUT);
 const result2 = 100 * noun + verb;
 
 printResult(2, result1, result2);

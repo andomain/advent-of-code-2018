@@ -3,23 +3,13 @@ import { Intcode } from '../utils/Intcode';
 
 // Get data
 const init = readFile(`${__dirname}/input.txt`)
-    .split(',')
-    .map(n => Number(n));
+  .split(',')
+  .map(n => Number(n));
 
-const intCode = new Intcode(init);
-intCode.process(1);
-const result1 = intCode.output;
-intCode.reset();
+const intCode1 = new Intcode(init);
+const intCode2 = new Intcode(init);
 
-if (result1 === null) {
-    throw new Error('No output set');
-}
-
-intCode.process(5);
-const result2 = intCode.output;
-
-if (result2 === null) {
-    throw new Error('No output set');
-}
+const result1 = intCode1.execute([1]);
+const result2 = intCode2.execute([5]);
 
 printResult(5, result1, result2);
