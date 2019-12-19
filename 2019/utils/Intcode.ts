@@ -61,7 +61,7 @@ export class Intcode implements IIntcode {
         }
         case INPUT: {
           const input = inputs.shift();
-          if (!input) {
+          if (input === undefined) {
             throw new Error('No input to read');
           }
           this.program[instruction[1]] = input;
