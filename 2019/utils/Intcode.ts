@@ -1,6 +1,6 @@
 interface IIntcode {
   program: number[],
-  execute: (inputs: number[]) => number,
+  execute: (inputs: number[]) => number[],
 }
 
 const ADD = 1;
@@ -36,9 +36,9 @@ export class Intcode implements IIntcode {
     return instruction[position];
   }
 
-  execute(inputs: number[] = []): number {
+  execute(inputs: number[] = []): number[] {
     let finished = false;
-    let output: number = 0;
+    let output: number[] = [];
     for (let i = 0; ((i < this.program.length) && !finished);) {
       const instruction = this.program.slice(i, i + 4);
 
@@ -69,7 +69,7 @@ export class Intcode implements IIntcode {
           break;
         }
         case OUTPUT: {
-          output = param1;
+          output.push(param1);
           i += 2;
           break;
         }

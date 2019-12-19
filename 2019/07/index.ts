@@ -20,7 +20,7 @@ class Amplifier implements IAmp {
   }
 
   run(input: number): number {
-    return this.processor.execute([this.phaseSetting, input])
+    return this.processor.execute([this.phaseSetting, input])[0];
   }
 }
 
