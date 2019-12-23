@@ -38,3 +38,11 @@ export function getPermutations<T>(input: T[]): T[][] {
 
   return result;
 }
+
+export function chunkArray<T>(input: T[], size: number): T[][] {
+  const result = [];
+  for (let i = 0; i < input.length; i += size) {
+    result.push(input.slice(i, i + size));
+  }
+  return result;
+}
