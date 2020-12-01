@@ -2,7 +2,11 @@ import { readFileLines } from '../utils';
 
 const TARGET_SUM = 2020;
 
-const getTwoArrayElementsThatSumTo = (inputArray: number[], target: number): [number, number] => {
+export const parseInput = (inputFile: string): number[] => readFileLines(inputFile)
+  .map(Number)
+  .sort((a, b) => (a - b));
+
+export const getTwoArrayElementsThatSumTo = (inputArray: number[], target: number): [number, number] => {
   let startIndex: number = 0;
   let endIndex: number = inputArray.length - 1;
 
@@ -18,10 +22,10 @@ const getTwoArrayElementsThatSumTo = (inputArray: number[], target: number): [nu
     }
   }
 
-  throw new Error(`Could not find elements summing to ${target}`);
+  throw new Error(`Could not find 2 elements summing to ${target}`);
 }
 
-const getThreeArrayElementsThatSumTo = (inputArray: number[], target: number): [number, number, number] => {
+export const getThreeArrayElementsThatSumTo = (inputArray: number[], target: number): [number, number, number] => {
   let startIndex = 0;
   let maxIndex = inputArray.length - 1;
 
@@ -29,11 +33,7 @@ const getThreeArrayElementsThatSumTo = (inputArray: number[], target: number): [
     try {
       const tmp = inputArray[startIndex];
       const [a, b] = getTwoArrayElementsThatSumTo(inputArray.slice(startIndex + 1), target - tmp);
-      if (tmp + a + b === target) {
-        return [tmp, a, b];
-      } else {
-        startIndex++;
-      }
+      return [tmp, a, b];
     } catch (err) {
       startIndex++;
     }
@@ -41,12 +41,8 @@ const getThreeArrayElementsThatSumTo = (inputArray: number[], target: number): [
   throw new Error(`Could not find 3 elements summing to ${target}`);
 }
 
-const lines: number[] = readFileLines(`${__dirname}/input.txt`)
-  .map(Number)
-  .sort((a, b) => (a - b));
-
+const lines: number[] = parseInput(`${__dirname}/input.txt`);
 const [a, b] = getTwoArrayElementsThatSumTo(lines, TARGET_SUM);
-
 const [c, d, e] = getThreeArrayElementsThatSumTo(lines, TARGET_SUM);
 
 console.log(`Part 1: ${a * b}`);

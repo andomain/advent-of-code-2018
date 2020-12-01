@@ -1,0 +1,2 @@
+Multiple lines
+test file with trailing whitespace       
