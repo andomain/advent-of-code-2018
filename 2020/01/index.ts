@@ -28,7 +28,7 @@ const getThreeArrayElementsThatSumTo = (inputArray: number[], target: number): [
   while (startIndex <= maxIndex) {
     try {
       const tmp = inputArray[startIndex];
-      const [a, b] = getTwoArrayElementsThatSumTo(inputArray.slice(startIndex + 1), TARGET_SUM - tmp);
+      const [a, b] = getTwoArrayElementsThatSumTo(inputArray.slice(startIndex + 1), target - tmp);
       if (tmp + a + b === target) {
         return [tmp, a, b];
       } else {
