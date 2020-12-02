@@ -1,4 +1,4 @@
-import { countValidPasswordsPartOne, getParts } from '.';
+import { countValidPasswordsPartOne, countValidPasswordsPartTwo, getParts } from '.';
 import { readFileLines } from '../utils';
 
 const testInput = readFileLines(`${__dirname}/test.txt`);
@@ -19,6 +19,12 @@ describe('Test inputs', () => {
   describe('Part one', () => {
     it('counts how many valid passwords there are', () => {
       expect(countValidPasswordsPartOne(testInput)).toEqual(2);
+    });
+  });
+
+  describe('Part two', () => {
+    it('counts how many valid passwords there are', () => {
+      expect(countValidPasswordsPartTwo(testInput)).toEqual(1);
     });
   });
 });

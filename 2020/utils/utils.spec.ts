@@ -37,5 +37,14 @@ describe('numBetween', () => {
     expect(utils.numBetween(1)).toBeTruthy();
     expect(utils.numBetween(-1)).toBeFalsy();
     expect(utils.numBetween(Number.MAX_SAFE_INTEGER + 1)).toBeFalsy();
-  })
-})
+  });
+});
+
+describe('logicalXor', () => {
+  it('implements a logical Xor', () => {
+    expect(utils.logicalXor(false,false)).toBeFalsy();
+    expect(utils.logicalXor(false,true)).toBeTruthy();
+    expect(utils.logicalXor(true,false)).toBeTruthy();
+    expect(utils.logicalXor(true,true)).toBeFalsy();
+  });
+});

@@ -6,3 +6,7 @@ export const readFileLines = (filePath: string, enc = 'utf-8'): string[] => read
 export const numBetween = (num: number, { min = 0, max = Number.MAX_SAFE_INTEGER } = {}) => {
   return num <= max && num >= min;
 }
+
+export const logicalXor = (a: boolean, b: boolean): boolean => {
+  return (a && !b) || (!a && b);
+}
