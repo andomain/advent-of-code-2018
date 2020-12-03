@@ -1,12 +1,10 @@
-import { traverseMapAndCountTrees } from ".";
-import { readFileLines } from "../utils";
+import { part1, part2 } from ".";
 
-const testInput = readFileLines(`${__dirname}/test.txt`);
-
-describe('Test inputs', () => {
-  describe('Part one', () => {
-    it('traverses map and counts trees', () => {
-      expect(traverseMapAndCountTrees(testInput, { right: 3, down: 1 })).toBe(7);
-    })
-  })
-})
+describe('Results', () => {
+  it('part 1', () => {
+    expect(part1).toBe(232);
+  });
+  it('part 2', () => {
+    expect(part2).toBe(3952291680);
+  });
+});
