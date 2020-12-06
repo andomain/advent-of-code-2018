@@ -1,36 +1,36 @@
+import { Intcode } from '../lib';
 import { readFile, printResult } from '../utils';
-import { Intcode } from '../utils/Intcode';
 
-const TARGET_OUTPUT = 19690720;
+export const program = readFile(`${__dirname}/input.txt`);
 
-// Inefficient loop
-const findTarget = (program: number[], target: number): { noun: number, verb: number } => {
-  for (let noun = 1; noun <= 99; noun++) {
-    for (let verb = 1; verb <= 99; verb++) {
-      const intCode = new Intcode(program)
-      intCode.set(1, noun);
-      intCode.set(2, verb);
-      intCode.execute();
-      const result = intCode.get(0);
-      if (result === target) {
-        return { noun, verb };
+const intcode = new Intcode(program);
+intcode.setState(1, 12);
+intcode.setState(2, 2);
+intcode.run();
+
+export const part1 = intcode.output;
+
+export const getInputs = (intcodeMachine: Intcode, target: number): { verb: number, noun: number } => {
+  for (let noun = 0; noun <= 99; noun++) {
+    for (let verb = 0; verb <= 99; verb++) {
+      intcodeMachine.reset();
+      intcodeMachine.noun = noun;
+      intcodeMachine.verb = verb;
+      intcodeMachine.run();
+
+      if (intcodeMachine.output === target) {
+        return { verb, noun };
       }
     }
   }
-  throw new Error('Could not calculate target')
+
+  throw new Error('No noun/verb combination exists');
 }
 
+const { noun, verb } = getInputs(intcode, 19690720);
 
-// Get data
-const init = readFile(`${__dirname}/input.txt`).split(',').map(n => Number(n));
+export const part2 = 100 * noun + verb;
 
-const intCode = new Intcode(init);
-intCode.set(1, 12);
-intCode.set(2, 2);
-intCode.execute();
-const result1 = intCode.get(0);
 
-const { noun, verb } = findTarget(init, TARGET_OUTPUT);
-const result2 = 100 * noun + verb;
+printResult(2, part1, part2);
 
-printResult(2, result1, result2);
