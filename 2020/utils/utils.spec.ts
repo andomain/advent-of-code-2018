@@ -42,9 +42,19 @@ describe('numBetween', () => {
 
 describe('logicalXor', () => {
   it('implements a logical Xor', () => {
-    expect(utils.logicalXor(false,false)).toBeFalsy();
-    expect(utils.logicalXor(false,true)).toBeTruthy();
-    expect(utils.logicalXor(true,false)).toBeTruthy();
-    expect(utils.logicalXor(true,true)).toBeFalsy();
+    expect(utils.logicalXor(false, false)).toBeFalsy();
+    expect(utils.logicalXor(false, true)).toBeTruthy();
+    expect(utils.logicalXor(true, false)).toBeTruthy();
+    expect(utils.logicalXor(true, true)).toBeFalsy();
   });
 });
+
+describe('splitByEmptyLines', () => {
+  it('splits a text file by emopty lines', () => {
+    expect(utils.splitByEmptyLine(`${__dirname}/splitByEmptyLineTest.txt`)).toEqual([
+      ['a', 'b', 'c'],
+      ['d'],
+      ['e'],
+    ])
+  })
+})
