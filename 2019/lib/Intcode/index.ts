@@ -14,10 +14,14 @@ export class Intcode {
 
   public buildInstruction(opcode: OPCODE): Instruction {
     switch (opcode) {
-      case OPCODE.ADD: return new AddInstruction(this.memory[this.pointer + 1], this.memory[this.pointer + 2], this.memory[this.pointer + 3]);
-      case OPCODE.MULT: return new MultInstruction(this.memory[this.pointer + 1], this.memory[this.pointer + 2], this.memory[this.pointer + 3]);
+      case OPCODE.ADD: return new AddInstruction(this.getParam(this.pointer + 1), this.getParam(this.pointer + 2), this.memory[this.pointer + 3]);
+      case OPCODE.MULT: return new MultInstruction(this.getParam(this.pointer + 1), this.getParam(this.pointer + 2), this.memory[this.pointer + 3]);
       default: throw new Error(`Unknown instruction opcode ${opcode}`);
     }
+  }
+
+  public getParam(value: number): number {
+    return this.memory[this.memory[value]];
   }
 
   public step(): void {
@@ -51,7 +55,7 @@ export class Intcode {
     this.memory = [...this.initMemory];
   }
 
-  setState(position: number, value: number): void {
+  public setState(position: number, value: number): void {
     this.memory[position] = value;
   }
 

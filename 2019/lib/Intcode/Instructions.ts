@@ -19,13 +19,13 @@ export abstract class Instruction implements iInstruction {
 export class AddInstruction extends Instruction {
   public pointerStep = 4;
 
-  constructor (public addrA: number, public addrB: number, public destAddr: number) {
+  constructor (public paramA: number, public paramB: number, public destAddr: number) {
     super();
   }
 
   execute(input: Memory): Memory {
     const updated = Array.from(input);
-    updated[this.destAddr] = updated[this.addrA] + updated[this.addrB]
+    updated[this.destAddr] = this.paramA + this.paramB
     return updated;
   }
 }
@@ -33,13 +33,13 @@ export class AddInstruction extends Instruction {
 export class MultInstruction extends Instruction {
   public pointerStep = 4;
 
-  constructor (public addrA: number, public addrB: number, public destAddr: number) {
+  constructor (public paramA: number, public paramB: number, public destAddr: number) {
     super();
   }
 
   execute(input: Memory): Memory {
     const updated = Array.from(input);
-    updated[this.destAddr] = updated[this.addrA] * updated[this.addrB]
+    updated[this.destAddr] = this.paramA * this.paramB
     return updated;
   }
 }

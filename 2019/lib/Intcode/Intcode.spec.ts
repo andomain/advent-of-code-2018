@@ -16,23 +16,23 @@ describe('Intcode', () => {
 
   describe('Instructions', () => {
     it('builds add instructions', () => {
-      const intcode = new Intcode('1,2,3,4,99');
+      const intcode = new Intcode('');
       const instr = intcode.buildInstruction(1);
-      expect(instr).toEqual(new AddInstruction(2, 3, 4));
-    })
+      expect(instr).toBeInstanceOf(AddInstruction);
+    });
 
     it('builds mult instructions', () => {
-      const intcode = new Intcode('1,2,3,4,99');
+      const intcode = new Intcode('');
       const instr = intcode.buildInstruction(2);
-      expect(instr).toEqual(new MultInstruction(2, 3, 4));
-    })
+      expect(instr).toBeInstanceOf(MultInstruction);
+    });
 
     it('executes a basic Add instruction', () => {
-      const intcode = new Intcode('1,2,3,4,99')
+      const intcode = new Intcode('2,3,1,4,99')
       const add = new AddInstruction(1, 2, 3);
 
       const updated = intcode.execute(add);
-      expect(updated).toEqual([1, 2, 3, 5, 99]);
+      expect(updated).toEqual([2, 3, 1, 3, 99]);
     });
 
     it('executes a basic Mult instruction', () => {
@@ -40,7 +40,7 @@ describe('Intcode', () => {
       const mult = new MultInstruction(1, 2, 3);
 
       const updated = intcode.execute(mult);
-      expect(updated).toEqual([2, 2, 3, 6, 99]);
+      expect(updated).toEqual([2, 2, 3, 2, 99]);
     });
 
     it('throws when an invalid opcode is detected', () => {
