@@ -2,7 +2,9 @@ import { readFileLines } from "../utils";
 
 const TARGET_COLOR = 'shiny gold';
 
-class Bag {
+type BagLookup = Map<string, Bag>;
+
+export class Bag {
   public color: string
   public contains: {
     color: string,
@@ -24,39 +26,39 @@ class Bag {
   }
 }
 
-const bags = readFileLines(`${__dirname}/input.txt`)
-  .map(line => new Bag(line))
-
-const bagMap = bags.reduce((lookup, rule) => lookup.set(rule.color, rule), new Map<string, Bag>());
-
-const canBagContain = (color: string, target: string): boolean => {
-  if (!bagMap.has(target)) {
+export const canBagContain = (color: string, target: string, rules: BagLookup): boolean => {
+  if (!rules.has(target)) {
     return false;
   }
 
-  const bag = bagMap.get(color)!;
+  const bag = rules.get(color)!;
 
-  if (bag.contains.some(contained => (contained.color === target) || canBagContain(contained.color, target))) {
+  if (bag.contains.some(contained => (contained.color === target) || canBagContain(contained.color, target, rules))) {
     return true;
   }
 
   return false;
 }
 
-const countBagContents = (target: string): number => {
-  const bag = bagMap.get(target)!;
+export const countBagContents = (target: string, rules: BagLookup): number => {
+  const bag = rules.get(target)!;
 
   return bag.contains.reduce((sum, contents) => {
-    sum += (contents.count + contents.count * countBagContents(contents.color));
+    sum += (contents.count + contents.count * countBagContents(contents.color, rules));
     return sum;
   }, 0)
 }
 
+const bags = readFileLines(`${__dirname}/input.txt`)
+  .map(line => new Bag(line))
+
+const bagMap = bags.reduce((lookup, rule) => lookup.set(rule.color, rule), new Map<string, Bag>());
+
 export const part1 = new Set(
-  bags.filter(bag => canBagContain(bag.color, TARGET_COLOR))
+  bags.filter(bag => canBagContain(bag.color, TARGET_COLOR, bagMap))
 ).size;
 
-export const part2 = countBagContents(TARGET_COLOR);
+export const part2 = countBagContents(TARGET_COLOR, bagMap);
 
 console.log(`Part One: ${part1}`);
 console.log(`Part Two: ${part2}`);
