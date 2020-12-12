@@ -132,6 +132,10 @@ export class SeatPlan {
     return this.getPosition(position) === SYMBOL.EMPTY;
   }
 
+  inBounds(position: Position): boolean {
+    return this.hasRow(position.row) && this.hasColumn(position.column);
+  }
+
   hasRow(rowIndex: number): boolean {
     return this.positions[rowIndex] !== undefined;
   }

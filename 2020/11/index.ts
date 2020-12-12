@@ -12,8 +12,7 @@ export const getImmediateSurroundings: CountFunction = (plan, position) => {
 
       if (
         (x === 0 && y === 0)
-        || !plan.hasRow(nextRow)
-        || !plan.hasColumn(nextCol)
+        || !plan.inBounds(checkPosition)
       ) {
         continue;
       }
