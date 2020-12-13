@@ -16,9 +16,9 @@ export type SeatCount = {
 export class Position {
   constructor (public row: number, public column: number) { }
 
-  move(direction: Direction) {
-    this.row == direction.down;
-    this.column += direction.right;
+  move(direction: Direction): Position {
+    return new Position(this.row + direction.down, this.column + direction.right);
+
   }
 }
 
